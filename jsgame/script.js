@@ -4,12 +4,15 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight - 100;
 
+score = 0;
 frogImage = new Image();
 frogImage.src = "imgs/frog.png";
 
 mashroomImage = new Image();
 mashroomImage.src = "imgs/mashroom.png";
 
+mashroomImage2 = new Image();
+mashroomImage2.src = "imgs/mashroom2.png";
 const frog = {
   x: canvas.width / 2,
   y: canvas.height - canvas.height * 0.05,
@@ -21,12 +24,21 @@ const frog = {
 };
 
 const mushroom = {
-  x: canvas.width / 2,
-  y: 20,
+  y: canvas.width / 2,
+  x: Math.random() * canvas.width,
   width: 50,
   height: 50,
   color: "brown",
   image: mashroomImage,
+};
+
+const mushroom2 = {
+  y: canvas.width / 2,
+  x: Math.random() * canvas.width,
+  width: 50,
+  height: 50,
+  color: "brown",
+  image: mashroomImage2,
 };
 
 function drawFrog() {
@@ -39,13 +51,23 @@ function drawFrog() {
   );
 }
 
-function drawMushroom() {
+function drawMushroomBad() {
   ctx.drawImage(
     mushroom.image,
     mushroom.x - frog.width / 2,
     mushroom.y - frog.height / 2,
     mushroom.width,
     mushroom.height,
+  );
+}
+
+function drawMushroomGood() {
+  ctx.drawImage(
+    mushroom2.image,
+    mushroom2.x - frog.width / 2,
+    mushroom2.y - frog.height / 2,
+    mushroom2.width,
+    mushroom2.height,
   );
 }
 
@@ -66,11 +88,26 @@ function handleCollisions() {
   if (checkCollision(frog, mushroom)) {
     mushroom.x = Math.random() * canvas.width;
     mushroom.y = 20;
+    while (Math.abs(mushroom2.x - mushroom.x) < frog.width * 2.5) {
+      mushroom.x = Math.random() * canvas.width;
+      mushroom.y = 20;
+    }
+  }
+  if (checkCollision(frog, mushroom2)) {
+    mushroom2.x = Math.random() * canvas.width;
+    mushroom2.y = 20;
+    console.log(Math.abs(mushroom2.x - mushroom.x));
+    while (Math.abs(mushroom2.x - mushroom.x) < frog.width * 2.5) {
+      mushroom2.x = Math.random() * canvas.width;
+      mushroom2.y = 20;
+      console.log(Math.abs(mushroom2.x - mushroom.x));
+    }
+    score += 1;
   }
 }
 
-function updateMushroom() {
-  const gravity = 1;
+function updateMushroom(mushroom) {
+  let gravity = 1 + 0.03 * score;
   mushroom.y += gravity;
 
   if (mushroom.y > canvas.height) {
@@ -95,13 +132,22 @@ function right() {
   frog.direction = 1;
 }
 
+function drawScore() {
+  ctx.font = "24px Arial"; // Set font size and style
+  ctx.fillStyle = "black"; // Set text color
+  ctx.fillText("Score: " + score, 20, 40); // Draw score text
+}
+
 function update() {
   clearCanvas();
   drawFrog();
-  drawMushroom();
+  drawMushroomGood();
+  drawMushroomBad();
   handleCollisions();
-  updateMushroom();
+  updateMushroom(mushroom);
+  updateMushroom(mushroom2);
   updateFrog();
+  drawScore();
 }
 
 setInterval(update, 10);
