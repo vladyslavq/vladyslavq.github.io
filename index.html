@@ -1,10 +1,91 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Vladyslav's Personal Page</title>
-    </head>
-    <body>
-        <h1>Vladyslav's Personal Page</h1>
-        <img src="cat.jpeg" width="100px"/>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game of Life</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="1000" height="800"></canvas>
+    <script async type="text/javascript" src="index.js"></script>
+    <script>
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function generateRandomBinaryArray(size) {
+            let array = [];
+            for (let i = 0; i < size; i++) {
+                array.push(Math.floor(Math.random() * 2));
+            }
+            return array;
+        }
+
+        function getArrayFromPointer(pointer, length) {
+            return Module.HEAP32.subarray(pointer / 4, pointer / 4 + length);
+        }
+
+        function drawArrayOnCanvas(array, rows, cols) {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const cellWidth = canvas.width / cols;
+            const cellHeight = canvas.height / rows;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if (array[i * cols + j] === 1) {
+                        ctx.fillStyle = 'black';
+                    } else {
+                        ctx.fillStyle = 'white';
+                    }
+                    ctx.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
+                }
+            }
+        }
+
+        var Module = {
+            onRuntimeInitialized: async function() {
+                let randomBinaryArray = generateRandomBinaryArray(8000);
+                let steps = 100;
+                let worldPointer = Module._malloc(8000 * 4); // Allocate memory in the Emscripten heap
+                Module.HEAP32.set(randomBinaryArray, worldPointer / 4); // Set the initial state in the heap
+
+                var rows = 80; // Number of rows in the grid
+                var cols = 100; // Number of columns in the grid
+
+                while (steps > 0) {
+                    Module.ccall(
+                        'next_world_state', // Name of the C function
+                        null, // Return type (null if void)
+                        ['number', 'number', 'number'], // Argument types
+                        [worldPointer, rows, cols] // Arguments
+                    );
+
+                    var retrievedArray = getArrayFromPointer(worldPointer, 8000);
+                    drawArrayOnCanvas(retrievedArray, rows, cols);
+
+                    steps--; // Decrement steps to avoid an infinite loop
+                    await sleep(500);
+                }
+
+                // Free the allocated memory when done
+                Module._free(worldPointer);
+            }
+        };
+    </script>
+</body>
 </html>
