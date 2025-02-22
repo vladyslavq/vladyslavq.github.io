@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Владуськіні улюблені речі</title>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0;
+                background-color: #fff;
+            }
+            h1 {
+                text-align: center;
+                font-family: Oswald;
+                color: black;
+                margin-top: 20px;
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                padding: 20px;
+                width: 90%;
+                max-width: 1200px;
+            }
+            .grid img,
+            iframe {
+                height: 200px;
+                width: 200px;
+                object-fit: contain;
+            }
+            .grid img:hover {
+                transform: scale(1.2);
+                transition: transform 0.3s ease-in-out;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Мої улюблені речі</h1>
+        <div class="grid">
+            <img src="img/club-mate.webp" alt="Club Mate" />
+            <img
+                src="img/casal-garcia-vinho-verde.png"
+                alt="Vinho Verde Casal Garcia"
+            />
+            <img src="img/k120.png" alt="Logitech K120" />
+            <img
+                src="img/ikea-varmblixt-lamp.webp"
+                alt="IKEA Varmblixt"
+                onclick="this.style.filter = this.style.filter ? '' : 'drop-shadow(0 0 15px orange)'"
+            />
+            <img src="img/ikea-idasen.avif" alt="IKEA Idasen" />
+            <img src="img/flipper.webp" alt="Flipper Zero" />
+            <img
+                src="img/teenage-engineering-sub.avif"
+                alt="Teenage Engineering Sub"
+            />
+            <img src="img/ikea-huvudroll-meatballs.avif" alt="IKEA Meatballs" />
+            <img
+                src="img/mlekovita-mleko-proteinove.webp"
+                alt="Mlekovita mleko proteinove"
+            />
+            <img
+                src="img/pure-kotlety.png"
+                alt="Kotlety mielone z ziemniakami i buraczkami"
+            />
+            <img src="img/kindle-scribe.webp" alt="Kindle Scribe" />
+            <img src="img/cropp-hat.jpg" alt="Cropp hat" />
+            <iframe
+                style="border-radius: 12px"
+                src="https://open.spotify.com/embed/track/3tpNnUzPHhN6kZfHUnoKfV?utm_source=generator&theme=0"
+                frameborder="0"
+                allowfullscreen=""
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+            ></iframe>
+        </div>
+    </body>
+</html>
